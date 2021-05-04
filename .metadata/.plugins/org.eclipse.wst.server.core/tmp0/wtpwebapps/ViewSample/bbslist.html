@@ -16,7 +16,7 @@
 
 </head>
 <body>
-
+<a href="pdslist.html">자료실</a>
 <!-- 검색 -->
 <div class="box_border" style="margin-top: 5px; margin-bottom: 10px">
 
@@ -105,7 +105,7 @@ function getBbsListData( pNumber ) {
 						+ "<td style='text-align:left'>";
 					if(val.del == 0){				
 						app +=	arrow(val.depth) 
-							+ "<a href='bbsdetail.do?seq=" + val.seq + "'>" + val.title + "</a>";
+							+ "<a href='bbsdetail.html?seq=" + val.seq + "'>" + val.title + "</a>";
 								
 					}else{
 						app += "<font color='#ff0000'>********* 이 글은 작성자에 의해서 삭제되었습니다</font>";

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<table class="table table-striped table-hover" style="width: 85%">
+<colgroup>
+	<col width="50"><col width="100"><col width="300"><col width="50">
+	<col width="50"><col width="50"><col width="100">
+</colgroup>
+<thead>
+<tr>
+	<th>번호</th><th>작성자</th><th>제목</th><th>다운로드</th>
+	<th>조회수</th><th>다운수</th><th>작성일</th>
+</tr>
+</thead>
+
+<tbody id="_list_tbody">
+	
+
+
+</tbody>
+</table>
+
+
+<!-- 자료추가 버튼 -->
+<div id="button.wrap">
+	<span class="button blue">
+		<button type="button" id="_btnAdd">자료추가</button>
+	</span>
+</div>
+
+<!-- 다운로드 버튼을 클릭했을 시  -->
+<form name="file_Down" action="fileDownload.do" method="post">
+	<input type="hidden" name="filename">
+	<input type="hidden" name="newfilename">
+	<input type="hidden" name="seq">
+	<button type="button" onclick=""></button>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$.ajax({
+		url:"http://localhost:3000/pdslist",
+		type:"post",
+		success:function(list){
+		//	alert(list);
+		
+			let app = "";
+			
+			if(Object.keys(list).length == 0){
+				app += "<tr class='list_col'><td colspan='3'>작성된 글이 없습니다</td></tr>";
+			
+				$("#_list_tbody").append(app);
+			}else{
+				
+				$.each(list, function (i, pds) {
+					app += "<tr>"
+						+ "<td>" + (i + 1) + "</td>"
+						+ "<td>" + pds.id + "</td>"
+						+ "<td style='text-align: left;'>"
+						+ "<a href='pdsdetail.html?seq=" + pds.seq + "'>" + pds.title + "</a></td>"
+						+ "<td><button type='button' onclick='downBtn('" + pds.newFilename + "'," + "'" + pds.filename + "')'>파일 다운로드</button></td>"
+						+ "<td>" + pds.readcount + "</td>"
+						+ "<td>" + pds.downcount + "</td>"
+						+ "<td><font size='1'>" + pds.regdate + "</font></td>"
+						+ "</tr>";
+						
+				});
+				
+				$("#_list_tbody").append(app);	
+				
+			}
+		},
+		error:function(){
+			alert('error');
+		}
+	});
+	
+$("#downBtn").click(function () {
+		
+		location.href = "http://localhost:3000/fileDownload?fileName=" + "20.PNG";
+		
+	});
+});
+
+function downBtn(newFilename, filename) {
+	alert(newFilename);
+	alert(filename);
+	
+	location.href = "http://localhost:3000/fileDownload?fileName=" + filename + "&newFilename=" + newFilename;
+}
+
+$("#_btnAdd").click(function () {
+	
+	location.href = "pdswrite.html";
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

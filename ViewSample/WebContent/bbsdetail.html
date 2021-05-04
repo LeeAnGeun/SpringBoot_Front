@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- https://github.com/josecebe/twbs-pagination 에서 가져옴 -->
+<script type="text/javascript" src="./jquery/jquery.twbsPagination.min.js"></script>  
+
+<!-- 부트스트랩 -->
+<link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/table.css">
+</head>
+<body>
+
+<!-- html -> html로 파라미터값을 보냈을 때 받는 방법 -->
+<script type="text/javascript">
+	let urlParams = location.search.split(/[?&]/).slice(1).map(function(paramPair) {
+	    return paramPair.split(/=(.+)?/).slice(0, 2);
+	}).reduce(function(obj, pairArray) {
+	    obj[pairArray[0]] = pairArray[1];
+	    return obj;
+	}, {});
+</script>
+
+<form action="">
+<div align="center">
+	<table class="list_table" id="_list_table" style="width: 85%">
+		
+	</table>
+</div>
+
+<div align="center" id="_button">
+
+</div>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	// html -> html로 파라미터값을 보냈을 때 받는 방법1
+//	let seq = getParameterByName('seq');
+	
+	// html -> html로 파라미터값을 보냈을 때 받는 방법2
+	let seq = urlParams.seq;
+//	alert('seq2 = ' + seq);
+
+	let login = sessionStorage.getItem("login");
+	let json = JSON.parse(login); // String -> json
+	
+	$.ajax({
+		url:"http://localhost:3000/bbsDetail",
+		type:'get',
+		data:{seq:seq},
+		success:function( data ){
+		//	alert(data);
+			
+			let app = "<col width='100'><col width='300'>"
+			
+			app += "<tr><td>작성자id</td><td>" + data.id + "</td></tr>";
+			app += "<tr><td>작성일</td><td>" + data.wdate + "</td></tr>";		
+			app += "<tr><td>제목</td><td>" + data.title + "</td></tr>";		
+			app += "<tr><td>조회수</td><td>" + data.readcount + "</td></tr>";		
+			app += "<tr><td>정보</td><td>" + data.ref + "-" + data.step + "-" + data.depth + "</td></tr>";		
+			app += "<tr><td colspan='2'>" + data.content + "</td></tr>";		
+			
+			$("#_list_table").append(app);	
+			
+			let app2 = "";
+			if(json.id == data.id){
+				app2 += "<input type='button' value='글삭제' id='remove'>";
+				app2 += "<input type='button' value='글수정' id='update'>";
+			}
+			
+			app2 += "<input type='button' id='answerbbs' value='댓글추가'>";
+			app2 += "<input type='button' value='글목록' id='bbslist'>";
+			
+			 
+			$("#_button").append(app2);		
+		},
+		error:function(){
+			alert('error');
+		}
+	});
+	
+	$(document).on("click", "#addBbs", function () {
+//		alert("오나?");
+		location.href = "bbswrite.html";
+	});
+	
+	
+	$(document).on("click", "#remove", function () {
+		alert("remove click");
+		$.ajax({
+			url:"http://localhost:3000/bbsDelete",
+			type:"get",
+			data:{seq:seq},
+			success:function( data ){
+				alert("success");
+				
+				if(data > 0){
+					alert("게시물이 삭제되었습니다.");
+					location.href = "bbslist.html";
+				}else{
+					alert("게시물 삭제에 실패하였습니다.");
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	});
+	
+	$(document).on("click", "#update", function () {
+		location.href="bbsupdate.html?seq=" + seq;
+	});
+	
+	$(document).on("click", "#bbslist", function () {
+		location.href = "bbslist.html";
+	});
+	
+	$(document).on("click", "#answerbbs", function () {
+		location.href = "answer.html?seq=" + seq;
+	});
+	
+
+	
+});
+
+
+
+/* javascript - 주소의 파라미터값 변수로 받기 */
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+
+</script>
+
+</body>
+</html>

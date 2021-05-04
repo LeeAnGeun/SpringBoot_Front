@@ -22,7 +22,7 @@
 	<table class="list_table" style="width: 85%" >
 		<col width="100"><col width="300">
 		<tr>
-			<td>id</td><td><input type="text" name="id" id="_id" value=""></td>
+			<td>id</td><td><input type="text" name="id" id="_id"  readonly="readonly"></td>
 		</tr>
 		<tr>
 			<td>제목</td><td width="50"><input name="title" id="_title" type="text" size="50"> </td>
@@ -52,7 +52,8 @@
 $(document).ready(function() {
 	let login = sessionStorage.getItem("login");
 	let json = JSON.parse(login); // String -> json
-//	alert(json.id)
+//	alert(json.id);
+	$("#_id").val(json.id);
 	
 //	alert($("#summernote").val());
 	
@@ -66,9 +67,17 @@ $(document).ready(function() {
 			// data:{id:$("#_id").val(), pwd:$("#_title").val(), content:summernote},
 			data:queryString,
 			dataType : 'json',
-			success:function(b){
-				alert("seuccess");
+			success:function(count){
+			//	alert("seuccess");
+				alert(count);
 				
+				if(count > 0){
+					alert("글 추가에 성공하셨습니다.");
+					location.href = "bbslist.html";
+				}else{
+					alert("글 추가에 실패하였습니다.");
+					location.href = "bbslist.html";
+				}
 			},
 			error:function(){
 				alert('error');

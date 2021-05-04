@@ -1,3 +1,5 @@
 INDEX VERSION 1.131
+D:\viewBootSamples\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\850625350.index
+\ViewSample\src
 D:\viewBootSamples\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\832211093.index
 \ViewSample\src

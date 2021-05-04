@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<!-- html -> html로 파라미터값을 보냈을 때 받는 방법 -->
+<script type="text/javascript">
+	let urlParams = location.search.split(/[?&]/).slice(1).map(function(paramPair) {
+	    return paramPair.split(/=(.+)?/).slice(0, 2);
+	}).reduce(function(obj, pairArray) {
+	    obj[pairArray[0]] = pairArray[1];
+	    return obj;
+	}, {});
+</script>
+
+
+
+<div align="center">
+	<form id="frm">
+	<input type="hidden" id="_seq" value="" name="seq"> 
+	<table border="1">
+		<col width="100"><col width="300">
+		<tr>
+			<td>작성자id</td><td><input type="text" name="id" id="_id" value="" readonly></td>
+		</tr>
+		<tr>
+			<td>작성일</td><td ><input type="text" name="wdate" id="_wdate" value="" readonly="readonly"></td>
+		</tr>
+		<tr>
+			<td>제목</td><td ><input type="text" name="title" id="_title" value=""></td>
+		</tr>
+		<tr>
+			<td>조회수</td><td><input type="text" name="readcount" id="_readcount" value="" readonly="readonly"></td>
+		</tr>
+		
+		<!-- summer note 사용시 추가 --> 
+        <script src="./js/summernote/summernote-lite.js"></script>
+        <script src="./js/summernote/lang/summernote-ko-KR.js"></script>
+        <link rel="stylesheet" href="./css/summernote/summernote-lite.css">
+		
+		<tr>
+			<td colspan="2">
+                 <div class="review_contents">
+                    <textarea class="review_textarea" id="summernote" class="note" name="content"></textarea>
+                 </div>
+              </td>
+		</tr>
+	</table>
+	<input type="button" id="bbsUpdate" value="수정완료"></button>
+	<button type="button" id="btn2">취소</button>
+	</form>
+</div>
+
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+	let seq = urlParams.seq;
+//	alert('seq = ' + seq);
+//	alert($("#summernote").val());
+	
+	$.ajax({
+		url:"http://localhost:3000/bbsDetail",
+		type:'get',
+		data:{seq:seq},
+		success:function(data){
+			$("#_seq").val(data.seq);
+			$("#_id").val(data.id);
+			$("#_wdate").val(data.wdate);
+			$("#_title").val(data.title);
+			$("#_readcount").val(data.readcount);
+			$('#summernote').summernote('code', data.content);
+			
+		},
+		error:function(){
+			alert('error');
+		}
+	});
+	
+	$('#summernote').summernote({
+        height: 200,
+        width:770,
+        minHeight: 100,             // 최소 높이
+        maxHeight: null,             // 최대 높이
+        focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+        lang: "ko-KR",               // 한글 설정
+        placeholder: "내용을 기입하세요",   //placeholder       
+        //툴바 변경
+        	
+         toolbar: [
+             // [groupName, [list of button]]
+             ['fontname', ['fontname']],
+             ['fontsize', ['fontsize']],
+             ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+             ['color', ['forecolor','color']],
+             ['para', ['ul', 'ol', 'paragraph']]
+           ],
+         fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+         fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']   
+   });
+	
+	$("#bbsUpdate").click(function () {
+		let queryString = $("#frm").serialize() ;
+		
+		$.ajax({
+			url:"http://localhost:3000/bbsUpdate",
+			type:'get',
+			data:queryString,
+			dataType : 'json',
+			success:function(count){
+				alert(count);
+				
+				if(count > 0){
+					alert("글 수정에 성공하셨습니다.");
+					location.href = "bbslist.html";
+				}else{
+					alert("글 수정에 실패하였습니다.");
+					location.href = "bbslist.html";
+				}
+			},
+			error:function(){
+				alert('error');
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

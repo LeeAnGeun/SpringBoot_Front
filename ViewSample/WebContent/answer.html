@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- https://github.com/josecebe/twbs-pagination 에서 가져옴 -->
+<script type="text/javascript" src="./jquery/jquery.twbsPagination.min.js"></script>  
+
+<!-- 부트스트랩 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<script type="text/javascript">
+/* javascript - 주소의 파라미터값 변수로 받기 */
+	let urlParams = location.search.split(/[?&]/).slice(1).map(function(paramPair) {
+	    return paramPair.split(/=(.+)?/).slice(0, 2);
+	}).reduce(function(obj, pairArray) {
+	    obj[pairArray[0]] = pairArray[1];
+	    return obj;
+	}, {});
+</script>
+
+<div align="center">
+
+<h2>부모글</h2>
+
+<table class="list_table" id="_list_table" style="width: 85%">
+
+</table>
+
+
+<br><br><br>
+<h2>답글</h2>
+
+<form action="bbsanswerAf.do" id="frm" method="post">
+<input type="hidden" name="seq" id="_seq" value=""><!--  데이터를 넘기기위한 input tag -->
+
+<table class="list_table" style="width: 85%">
+<col width="200"><col width="500">
+
+<tr>
+	<td>아이디</td>
+	<td>
+		<input type="text" name="id" id="_id" size="50" readonly="readonly" value="">
+	</td>
+</tr>
+<tr>
+	<td>제목</td>
+	<td>
+		<input type="text" name="title" size="50">
+	</td>
+</tr>
+<tr>
+	<td>내용</td>
+	<td>
+		<textarea rows="10" cols="50" name="content"></textarea>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<input type="button" id="answer" value="답글작성완료">
+	</td>
+</tr>
+</table>
+
+</form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	let seq = urlParams.seq;
+//	alert('seq2 = ' + seq);
+	$("#_seq").val(seq);
+	
+	let login = sessionStorage.getItem("login");
+	let json = JSON.parse(login); // String -> json
+	$("#_id").val(json.id);
+
+	$.ajax({
+		url:"http://localhost:3000/bbsDetail",
+		type:'get',
+		data:{seq:seq},
+		success:function( data ){
+		//	alert(data);
+			
+			let app = "<col width='100'><col width='300'>"
+			
+			app += "<tr><td>작성자id</td><td>" + data.id + "</td></tr>";
+			app += "<tr><td>작성일</td><td>" + data.wdate + "</td></tr>";		
+			app += "<tr><td>제목</td><td>" + data.title + "</td></tr>";		
+			app += "<tr><td>조회수</td><td>" + data.readcount + "</td></tr>";		
+			app += "<tr><td>정보</td><td>" + data.ref + "-" + data.step + "-" + data.depth + "</td></tr>";		
+			app += "<tr><td colspan='2'>" + data.content + "</td></tr>";		
+			
+			$("#_list_table").append(app);	
+				
+		},
+		error:function(){
+			alert('error');
+		}
+	});
+	
+	$(document).on("click", "#answerbbs", function () {
+		let queryString = $("#frm").serialize() ;
+		
+		$.ajax({
+			url:"http://localhost:3000/answer",
+			type:'get',
+			data:queryString,
+			dataType : 'json',
+			success:function(count){
+				alert(count);
+				
+				if(count > 0){
+					alert("댓글을 추가 하였습니다.");
+					location.href = "bbslist.html";
+				}else{
+					alert("댓글 추가에 실패하였습니다.");
+					location.href = "bbslist.html";
+				}
+			},
+			error:function(){
+				alert('error');
+			}
+		});
+	});
+	
+});
+
+</script>
+
+</body>
+</html>

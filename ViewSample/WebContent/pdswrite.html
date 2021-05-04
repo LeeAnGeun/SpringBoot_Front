@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<form id="upload_file_frm">
+	<table class="table table-striped table-hover">
+		<tr>
+			<th>아이디</th>
+			<td style="text-align: left;">
+				<input type="text" name="id" id="_id" readonly="readonly" value="" size="50">
+			</td>
+		</tr>
+		
+		<tr>
+			<th>제목</th>
+			<td style="text-align: left;">
+				<input type="text" name="title" id="_title" size="50"> 
+			</td>
+		</tr>
+		
+		<tr>
+			<th>파일 업로드</th>
+			<td style="text-align: left;">
+				<input type="file" id="_uploadFile" name="uploadFile" accept="*">
+			</td>
+		</tr>
+		
+		<tr>
+			<th>내용</th>
+			<td style="text-align: left;">
+				<textarea rows="10" cols="50" name="content" id="content"></textarea>
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" style="height: 50px; text-align: center;">
+				<!-- <a href="#none" id="_btnPds" title="자료올리기">
+					<img alt="" src="image/bwrite.png">
+				</a> -->
+				<input type="button" id="_btnPds" title="지료올리기" value="<img src='image/bwrite.png'>">
+			</td>
+		</tr>
+	</table>
+</form>	
+<script type="text/javascript">
+$(document).ready(function() {
+	let login = sessionStorage.getItem("login");
+	let json = JSON.parse(login); // String -> json
+	
+	$("#_id").val(json.id)
+	
+	$("#_btnPds").click(function () {
+	//	alert("click");
+		
+
+		$.ajax({
+			url:"http://localhost:3000/pdswrite",
+			type:"post",
+			data:new FormData($("#upload_file_frm")[0]),
+			enctype:'multipart/form-data',
+			processData:false,
+			contentType:false,
+			cache:false,
+			success:function(data){
+			//	alert('success');
+				alert(data);
+				location.href = "pdslist.html";
+			},
+			error:function(){
+				alert('error');
+			}	
+		});
+	});
+});
+</script>	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
