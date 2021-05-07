@@ -70,7 +70,7 @@ $(document).ready(function() {
 						+ "<td>" + pds.id + "</td>"
 						+ "<td style='text-align: left;'>"
 						+ "<a href='pdsdetail.html?seq=" + pds.seq + "'>" + pds.title + "</a></td>"
-						+ "<td><button type='button' onclick='downBtn('" + pds.newFilename + "'," + "'" + pds.filename + "')'>파일 다운로드</button></td>"
+						+ "<td><button type='button' onclick=\"downBtn('" + pds.newFilename + "', '" + pds.filename + "')\">파일 다운로드</button></td>"
 						+ "<td>" + pds.readcount + "</td>"
 						+ "<td>" + pds.downcount + "</td>"
 						+ "<td><font size='1'>" + pds.regdate + "</font></td>"

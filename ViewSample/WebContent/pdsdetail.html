@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+<!-- html -> html로 파라미터값을 보냈을 때 받는 방법 -->
+<script type="text/javascript">
+	let urlParams = location.search.split(/[?&]/).slice(1).map(function(paramPair) {
+	    return paramPair.split(/=(.+)?/).slice(0, 2);
+	}).reduce(function(obj, pairArray) {
+	    obj[pairArray[0]] = pairArray[1];
+	    return obj;
+	}, {});
+</script>
+
+
+<table class="list_table" id="_list_table" style="width: 85%">
+<col width="100"><col width="500">
+<tr>
+	<th>작성자</th>
+	<td>${pdsdto.id }</td>
+</tr>
+<tr>
+	<th>제목</th>
+	<td>${pdsdto.title }</td>
+</tr>
+<tr>
+	<th>조회수</th>
+	<td>${pdsdto.readcount }</td>
+</tr>
+<tr>
+	<th>다운로드수</th>
+	<td>${pdsdto.downcount }</td>
+</tr>
+<tr>
+	<th>파일</th>
+	<td><img src="./upload/${pdsdto.newfilename}" style="width: 200px; height: 200px"></td>
+</tr>
+<tr>
+	<th>다운로드</th>
+	<td>
+	<input type="button" name="btnDown" value="다운로드"
+			onclick="filedown('${pdsdto.filename }', '${pdsdto.newfilename}', '${pdsdto.seq }')">		filedown은 post형식으로 가야한다!!!
+	</td>
+</tr>
+<tr>
+	<th>등록일</th>
+	<td>${pdsdto.regdate }</td>
+</tr>
+<tr>
+	<th>내용</th>
+	<td>
+		${pdsdto.content }
+	</td>
+</tr>
+</table>
+<br>
+	<input type="button" id="update" value="수정">
+	<input type="button" id="delete" value="삭제">
+	<input type="button" id="pdslist" value="자료실">
+</form>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	
+	let seq = urlParams.seq;
+	
+	let login = sessionStorage.getItem("login");
+	let json = JSON.parse(login); // String -> json
+//	alert(seq)
+//	alert(json.id)
+	$.ajax({
+		url:"http://localhost:3000/pdsdetail",
+		type:'post',
+		data:{seq:seq},
+		success:function(data){
+//			alert('success');
+//			alert(data);
+			
+			let app = "<col width='100'><col width='300'>"
+			
+			app += "<tr><td>작성자</td><td>" + data.id + "</td></tr>";
+			app += "<tr><td>제목</td><td>" + data.title + "</td></tr>";		
+			app += "<tr><td>작성일</td><td>" + data.regdate + "</td></tr>";		
+			app += "<tr><td>조회수</td><td>" + data.readcount + "</td></tr>";		
+			app += "<tr><td>내용</td><td>" + data.content + "</td></tr>";		
+			app += "<tr><td colspan='2'>" + data.content + "</td></tr>";		
+			
+			$("#_list_table").append(app);	
+			
+		},
+		error:function(){
+			alert('error');
+		}
+	});
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
